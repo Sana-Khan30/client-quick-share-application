@@ -331,6 +331,6 @@ const styles = {
     fontSize: '13px',
     fontWeight: '500'
   }
-};
+}
 
 export default App;
