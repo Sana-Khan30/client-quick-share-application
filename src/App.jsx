@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// LOCAL RUN: http://localhost:5000
+// Live Backend URL updated
 const API_URL = "https://server-quick-share-application.vercel.app"; 
 
 function App() {
@@ -11,7 +11,7 @@ function App() {
   const [isConnected, setIsConnected] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
   
-  // Theme State (Default to Light now for AirForShare vibe)
+  // Theme State (Default to Light for AirForShare vibe)
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme');
     return saved === 'dark' ? true : false;
@@ -19,6 +19,7 @@ function App() {
 
   useEffect(() => { 
     fetchData();
+    // Auto-refresh every 15 seconds
     const interval = setInterval(fetchData, 15000); 
     return () => clearInterval(interval);
   }, []);
@@ -29,13 +30,14 @@ function App() {
 
   const fetchData = async () => {
     try {
-      const res = await axios.get(API_URL, { timeout: 2000 });
+      const res = await axios.get(API_URL, { timeout: 5000 });
       if (res.data.text !== undefined && text === "") {
         setText(res.data.text);
       }
       setIsConnected(true);
     } catch (err) { 
       setIsConnected(false);
+      console.error("Backend unreachable:", err.message);
     }
   };
 
@@ -43,13 +45,13 @@ function App() {
     setLoading(true);
     setMessage("");
     try {
-      await axios.post(`${API_URL}/save`, { text }, { timeout: 4000 });
+      await axios.post(`${API_URL}/save`, { text }, { timeout: 8000 });
       setMessage("Saved successfully");
       setIsConnected(true);
       setTimeout(() => setMessage(""), 3000);
     } catch (err) { 
       setIsConnected(false);
-      setMessage("Sync failed");
+      setMessage("Sync failed. Check connection.");
     }
     setLoading(false);
   };
@@ -58,7 +60,7 @@ function App() {
 
   return (
     <div style={{ ...styles.container, backgroundColor: theme.bg }}>
-      {/* Dynamic Background Pattern */}
+      {/* Background Pattern */}
       <div style={{ ...styles.grid, backgroundImage: theme.gridImage }}></div>
 
       <div style={{ ...styles.wrapper }}>
@@ -331,6 +333,6 @@ const styles = {
     fontSize: '13px',
     fontWeight: '500'
   }
-}
+};
 
 export default App;
