@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-// Live Backend URL updated
-const API_URL = "https://server-quick-share-application.vercel.app"; 
-
+const API_URL = import.meta.env.VITE_API_URL;
 function App() {
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
